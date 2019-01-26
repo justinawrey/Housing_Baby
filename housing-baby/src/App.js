@@ -1,6 +1,18 @@
+/*global chrome*/
+
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+
+
+chrome.storage.sync.set({'address': '4644 West 15th'}, function() {
+  console.log('Value is set to ' + '4644 West 15th');
+});
+
+chrome.storage.sync.get(['address'], function(result) {
+  console.log(result);
+  console.log('Value currently is ' + result.key);
+});
 
 class App extends Component {
   render() {
@@ -9,7 +21,7 @@ class App extends Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
-            Edit <code>src/App.js</code> and save to reload.
+            Edit shit <code>src/App.js</code> and save to reload.
           </p>
           <a
             className="App-link"
