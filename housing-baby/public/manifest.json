@@ -6,9 +6,9 @@
   "theme_color": "#000000",
   "background_color": "#ffffff",
   "version": "1.0",
-    "manifest_version": 2,
-    "browser_action": {
-        "default_popup": "index.html"
-    },
-    "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
 }
