@@ -10,8 +10,13 @@
   "browser_action": {
     "default_popup": "index.html"
   },
+  "content_scripts": [{
+    "matches": ["*://*.craigslist.org/*"],
+    "js": ["contentScript.js"]
+  }],
   "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'",
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab"
   ]
 }
