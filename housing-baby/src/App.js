@@ -2,17 +2,34 @@
 
 import React, { Component } from 'react'
 import logo from './logo.svg'
+import GoogleMap from './GoogleMap'
 import './App.css'
 
 class App extends Component {
+  constructor() {
+    super()
+    this.updateAddress = this.updateAddress.bind(this)
+    this.state = {
+      adAddress: null,
+    }
+  }
+
+  updateAddress(address) {
+    this.setState({
+      adAddress: address,
+    })
+  }
+
   componentDidMount() {
+    const that = this
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       chrome.tabs.sendMessage(
         tabs[0].id,
         { action: 'GET_ADDRESS' },
         response => {
+          console.log(response.address)
           if (response.address) {
-            console.log(response.address)
+            that.setState({ adAddress: response.address })
           } else {
             console.log('ADDRESS NOT AVAILABLE')
           }
@@ -22,24 +39,22 @@ class App extends Component {
   }
 
   render() {
-    return (
-      <div className='App'>
-        <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <p>
-            Edit shit <code> src / App.js </code> and save to reload.{' '}
-          </p>{' '}
-          <a
-            className='App-link'
-            href='https://reactjs.org'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            Learn React{' '}
-          </a>{' '}
-        </header>{' '}
-      </div>
-    )
+    if (this.state.adAddress) {
+      return (
+        <GoogleMap
+          origin='4644 West 15th Avenue, Vancouver BC'
+          destination={this.state.adAddress}
+          height='450'
+          width='600'
+        />
+      )
+    } else {
+      return (
+        <div>
+          <h1>ADDRESS UNAVAILABLE</h1>
+        </div>
+      )
+    }
   }
 }
 
