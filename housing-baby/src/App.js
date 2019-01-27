@@ -1,7 +1,6 @@
 /*global chrome*/
 
 import React, { Component } from 'react'
-import logo from './logo.svg'
 import GoogleMap from './GoogleMap'
 import './App.css'
 
@@ -42,8 +41,12 @@ class App extends Component {
     if (this.state.adAddress) {
       return (
         <GoogleMap
-          origin='4644 West 15th Avenue, Vancouver BC'
-          destination={this.state.adAddress}
+          origin={this.state.adAddress}
+          destinations={[
+            'Sun Sushi, Vancouver, BC',
+            'Burnaby, BC',
+            'Chilliwack, BC',
+          ]}
           height='450'
           width='600'
         />
