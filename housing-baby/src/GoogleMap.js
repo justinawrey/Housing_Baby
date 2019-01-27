@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import './GoogleMap.css'
 
 const formEmbeddedMap = (origin, destination, transportationMode) => {
   const path = 'https://www.google.com/maps/embed/v1/directions'
@@ -15,28 +16,47 @@ export default class GoogleMap extends Component {
     super(props)
     this.state = {
       transportationMode: 'driving',
+      selectedDestination: props.destinations[0],
     }
   }
 
   render() {
-    const { height, width, origin, destination } = this.props
-    const { transportationMode } = this.state
+    const { height, width, origin, destinations } = this.props
+    const { transportationMode, selectedDestination } = this.state
 
     return (
       <>
-        <div>
-          {['driving', 'bicycling', 'walking', 'transit'].map(item => (
-            <span>
-              <input
-                type='radio'
-                name='transportationMode'
-                value={item}
-                onClick={() => this.setState({ transportationMode: item })}
-                checked={this.state.transportationMode == item}
-              />
-              {item}
-            </span>
-          ))}
+        <div id='top-panel' style={{ width: Number(width) }}>
+          <div className='top-panel-child'>
+            <b>From:</b> {origin}
+            <br />
+            <br />
+            <b>To:</b>
+            <select
+              onChange={event =>
+                this.setState({ selectedDestination: event.target.value })
+              }
+            >
+              {destinations.map(item => (
+                <option> {item} </option>
+              ))}
+            </select>
+          </div>
+          <div className='top-panel-child'>
+            {['driving', 'bicycling', 'walking', 'transit'].map(item => (
+              <div>
+                <input
+                  type='radio'
+                  name='transportationMode'
+                  value={item}
+                  onClick={() => this.setState({ transportationMode: item })}
+                  checked={this.state.transportationMode == item}
+                />
+                {item}
+                <br />
+              </div>
+            ))}
+          </div>
         </div>
         <iframe
           title='map'
@@ -44,7 +64,7 @@ export default class GoogleMap extends Component {
           width={String(width)}
           frameborder='0'
           style={{ border: 0 }}
-          src={formEmbeddedMap(origin, destination, transportationMode)}
+          src={formEmbeddedMap(origin, selectedDestination, transportationMode)}
           allowfullscreen
         />
       </>
@@ -58,7 +78,7 @@ export default class GoogleMap extends Component {
 
   <GoogleMap
     origin='4644 West 15th Avenue, Vancouver BC'
-    destination='Sun Sushi, Vancouver, BC'
+    destinations={['Sun Sushi, Vancouver, BC', 'Burnaby, BC', 'Chilliwack, BC']}
     height='450'
     width='600'
   />
