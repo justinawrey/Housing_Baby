@@ -38,18 +38,18 @@ export default class GoogleMap extends Component {
               }
             >
               {destinations.map(item => (
-                <option> {item} </option>
+                <option key={item}> {item} </option>
               ))}
             </select>
           </div>
           <div className='top-panel-child'>
             {['driving', 'bicycling', 'walking', 'transit'].map(item => (
-              <div>
+              <div key={item}>
                 <input
                   type='radio'
                   name='transportationMode'
                   value={item}
-                  onClick={() => this.setState({ transportationMode: item })}
+                  onChange={() => this.setState({ transportationMode: item })}
                   checked={this.state.transportationMode === item}
                 />
                 {item}
@@ -62,10 +62,10 @@ export default class GoogleMap extends Component {
           title='map'
           height={String(height)}
           width={String(width)}
-          frameborder='0'
+          frameBorder='0'
           style={{ border: 0 }}
           src={formEmbeddedMap(origin, selectedDestination, transportationMode)}
-          allowfullscreen
+          allowFullScreen
         />
       </>
     )
