@@ -50,7 +50,7 @@ export default class GoogleMap extends Component {
                   name='transportationMode'
                   value={item}
                   onClick={() => this.setState({ transportationMode: item })}
-                  checked={this.state.transportationMode == item}
+                  checked={this.state.transportationMode === item}
                 />
                 {item}
                 <br />
