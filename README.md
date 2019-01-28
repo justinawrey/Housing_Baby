@@ -1,1 +1,1 @@
-# Houser Hardly Know Her
+# Route-finding craigslist extension for popular destinations
