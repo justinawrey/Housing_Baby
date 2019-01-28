@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import CreatableSelect from 'react-select/lib/Creatable'
 import './GoogleMap.css'
 
 const formEmbeddedMap = (origin, destination, transportationMode) => {
@@ -11,18 +12,28 @@ const formEmbeddedMap = (origin, destination, transportationMode) => {
   return `${path}?origin=${encodedOrigin}&destination=${encodedDestination}&mode=${encodedTransportationMode}&key=${apiKey}`
 }
 
+const getDestinationsFromLocalStorage = () =>
+  JSON.parse(localStorage.getItem('destinations')) || []
+
+const addDestinationsToLocalStorage = destinations =>
+  localStorage.setItem('destinations', JSON.stringify(destinations))
+
 export default class GoogleMap extends Component {
   constructor(props) {
     super(props)
+    const destinations = getDestinationsFromLocalStorage()
+    const selectedDestination = destinations && destinations[0]
+
     this.state = {
       transportationMode: 'driving',
-      selectedDestination: props.destinations[0],
+      destinations,
+      selectedDestination,
     }
   }
 
   render() {
-    const { height, width, origin, destinations } = this.props
-    const { transportationMode, selectedDestination } = this.state
+    const { height, width, origin } = this.props
+    const { transportationMode, selectedDestination, destinations } = this.state
 
     return (
       <>
@@ -32,15 +43,28 @@ export default class GoogleMap extends Component {
             <br />
             <br />
             <b>To:</b>
-            <select
-              onChange={event =>
-                this.setState({ selectedDestination: event.target.value })
-              }
-            >
-              {destinations.map(item => (
-                <option key={item}> {item} </option>
-              ))}
-            </select>
+            <CreatableSelect
+              isClearable
+              onChange={selectedDestination => {
+                if (selectedDestination) {
+                  this.setState({
+                    selectedDestination,
+                  })
+                }
+              }}
+              onCreateOption={created => {
+                const newDestination = { value: created, label: created }
+                const newDestinations = [...destinations, newDestination]
+                addDestinationsToLocalStorage(newDestinations)
+                this.setState({
+                  destinations: newDestinations,
+                  selectedDestination: newDestination,
+                })
+              }}
+              options={destinations}
+              value={selectedDestination}
+              placeholder='Select a destination or create new...'
+            />
           </div>
           <div className='top-panel-child'>
             {['driving', 'bicycling', 'walking', 'transit'].map(item => (
@@ -58,29 +82,22 @@ export default class GoogleMap extends Component {
             ))}
           </div>
         </div>
-        <iframe
-          title='map'
-          height={String(height)}
-          width={String(width)}
-          frameBorder='0'
-          style={{ border: 0 }}
-          src={formEmbeddedMap(origin, selectedDestination, transportationMode)}
-          allowFullScreen
-        />
+        {selectedDestination && (
+          <iframe
+            title='map'
+            height={String(height)}
+            width={String(width)}
+            frameBorder='0'
+            style={{ border: 0 }}
+            src={formEmbeddedMap(
+              origin,
+              selectedDestination.value,
+              transportationMode
+            )}
+            allowFullScreen
+          />
+        )}
       </>
     )
   }
 }
-
-/*
-
-  example use -
-
-  <GoogleMap
-    origin='4644 West 15th Avenue, Vancouver BC'
-    destinations={['Sun Sushi, Vancouver, BC', 'Burnaby, BC', 'Chilliwack, BC']}
-    height='450'
-    width='600'
-  />
-
-*/

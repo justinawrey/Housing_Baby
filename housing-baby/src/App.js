@@ -41,11 +41,6 @@ class App extends Component {
       <GoogleMap
         // origin={this.state.adAddress}
         origin='4644 West 15th Avenue'
-        destinations={[
-          'Sun Sushi, Vancouver, BC',
-          'Burnaby, BC',
-          'Chilliwack, BC',
-        ]}
         height='450'
         width='600'
       />
