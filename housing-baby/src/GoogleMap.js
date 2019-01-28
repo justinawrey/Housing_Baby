@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import CreatableSelect from 'react-select/lib/Creatable'
+import { components } from 'react-select'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import './GoogleMap.css'
 
 const formEmbeddedMap = (origin, destination, transportationMode) => {
@@ -11,6 +13,8 @@ const formEmbeddedMap = (origin, destination, transportationMode) => {
 
   return `${path}?origin=${encodedOrigin}&destination=${encodedDestination}&mode=${encodedTransportationMode}&key=${apiKey}`
 }
+
+const capitalize = text => text.charAt(0).toUpperCase() + text.slice(1)
 
 const getDestinationsFromLocalStorage = () =>
   JSON.parse(localStorage.getItem('destinations')) || []
@@ -40,11 +44,32 @@ export default class GoogleMap extends Component {
         <div id='top-panel' style={{ width: Number(width) }}>
           <div className='top-panel-child'>
             <b>From:</b> {origin}
-            <br />
-            <br />
             <b>To:</b>
             <CreatableSelect
               isClearable
+              components={{
+                Option: props => (
+                  <div className='custom-option'>
+                    <components.Option {...props} />
+                    <FontAwesomeIcon
+                      icon='times'
+                      className='custom-option-delete'
+                      onClick={() => {
+                        const newDestinations = destinations.filter(
+                          item => item.value !== props.value
+                        )
+                        const selectedDestination =
+                          newDestinations && newDestinations[0]
+                        addDestinationsToLocalStorage(newDestinations)
+                        this.setState({
+                          destinations: newDestinations,
+                          selectedDestination,
+                        })
+                      }}
+                    />
+                  </div>
+                ),
+              }}
               onChange={selectedDestination => {
                 if (selectedDestination) {
                   this.setState({
@@ -63,7 +88,7 @@ export default class GoogleMap extends Component {
               }}
               options={destinations}
               value={selectedDestination}
-              placeholder='Select a destination or create new...'
+              placeholder='Create new destination...'
             />
           </div>
           <div className='top-panel-child'>
@@ -76,7 +101,7 @@ export default class GoogleMap extends Component {
                   onChange={() => this.setState({ transportationMode: item })}
                   checked={this.state.transportationMode === item}
                 />
-                {item}
+                {capitalize(item)}
                 <br />
               </div>
             ))}
